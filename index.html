@@ -545,7 +545,7 @@ html{scroll-padding-top:95px}body{background:#fff;color:#21470E;font-family:'DM 
 .row-menu{position:relative;display:flex;justify-content:center}
 .row-menu-trigger{width:34px;height:34px;border:1px solid #cfe3bf;background:#fff;color:#21470E;border-radius:9px;font-size:25px;line-height:1;padding:0;display:grid;place-items:center}
 .row-menu-trigger:hover,.row-menu.open .row-menu-trigger{background:#eaf5e0}
-.row-menu-dropdown{position:absolute;right:0;top:calc(100% + 5px);min-width:142px;padding:5px;background:#fff;border:1px solid #dce9d3;border-radius:10px;box-shadow:0 12px 28px #21470e22;display:none;z-index:30}
+.row-menu-dropdown{position:absolute;right:0;top:auto;bottom:calc(100% + 5px);min-width:126px;padding:4px;background:#fff;border:1px solid #dce9d3;border-radius:9px;box-shadow:0 10px 22px #21470e22;display:none;z-index:100}
 .row-menu.open .row-menu-dropdown{display:flex;flex-direction:column}
 .row-menu-dropdown button{width:100%;text-align:left;padding:9px 11px;border:0;border-radius:6px;background:#fff;color:#21470E;font-size:11px}
 .row-menu-dropdown button:hover{background:#edf6e8}
@@ -617,8 +617,8 @@ button::-moz-focus-inner{border:0}
 #tab-items .status{display:inline-flex;align-items:center;white-space:nowrap;padding:5px 9px;border-radius:7px;font-size:11px;font-weight:700}
 #tab-items .status.sold,#tab-items .status.sold-text{color:#c62828!important;background:#fff0ef!important}
 #tab-items .row-menu-trigger{width:34px;height:34px;border-radius:9px;background:#f7faf4!important;border:1px solid #dce9d3!important;color:#315d25!important;font-size:22px;line-height:1}
-#tab-items .row-menu-dropdown{right:0;min-width:142px;padding:5px;background:#fff;border:1px solid #e1eadb;border-radius:11px;box-shadow:0 12px 28px rgba(20,45,20,.14);z-index:30}
-#tab-items .row-menu-dropdown button{display:block;width:100%;text-align:left;padding:10px 11px;border-radius:7px;background:#fff!important;color:#28452a!important;font-size:12px}
+#tab-items .row-menu-dropdown{right:0;top:auto;bottom:calc(100% + 5px);min-width:126px;padding:4px;background:#fff;border:1px solid #e1eadb;border-radius:9px;box-shadow:0 10px 22px rgba(20,45,20,.14);z-index:100}
+#tab-items .row-menu-dropdown button{display:block;width:100%;text-align:left;padding:8px 9px;border-radius:6px;background:#fff!important;color:#28452a!important;font-size:11px}
 #tab-items .row-menu-dropdown button:hover{background:#f0f7eb!important}
 @media(max-width:650px){#adminFab .fab-main{width:54px!important;height:54px!important;min-width:54px!important;min-height:54px!important}#tab-items .adminpanel{padding:11px!important}#adminLoginModal .modalbody{padding:18px!important}}
 
@@ -1559,6 +1559,9 @@ function openModal(id){
  // dialogs that were originally nested inside the storefront.
  if(modal.classList.contains('modalback')&&modal.parentElement!==document.body)document.body.appendChild(modal);
  modal.classList.add('show');
+ modal.scrollTop=0;
+ modal.querySelectorAll('.modalbody').forEach(body=>{body.scrollTop=0});
+ modal.querySelectorAll('.modal').forEach(box=>{box.scrollTop=0});
  if(id==='profileSettingModal')populateSettings();
  if(id==='detailModal'){
   modal.scrollTop=0;
