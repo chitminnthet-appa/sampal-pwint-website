@@ -1298,6 +1298,15 @@ body.modal-open #adminFab{visibility:hidden!important;opacity:0!important;pointe
 @media(max-width:520px){.detail-gallery-slide{height:260px}.detail-info-list .detail-info-card{padding:12px}.detail-info-list .detail-info-card>span{flex-basis:82px}}
 </style>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@3/css/lightgallery-bundle.min.css">
+<style id="lightgallery-detail-only">
+#detailGallery.detail-gallery{display:block;position:relative;overflow:hidden;margin:0 0 18px;border-radius:14px;background:#f1f4ef}
+#detailGallery .detail-gallery-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#detailGallery .detail-gallery-track::-webkit-scrollbar{display:none}
+#detailGallery .detail-gallery-slide{flex:0 0 100%;width:100%;height:clamp(210px,48vw,390px);display:grid;place-items:center;scroll-snap-align:center}
+#detailGallery .detail-gallery-slide img{display:block;width:100%;height:100%;object-fit:contain;padding:8px;border:0;border-radius:0;background:transparent}
+#detailGallery .detail-gallery-slide a{display:block;width:100%;height:100%;cursor:zoom-in}
+</style>
 </head>
 <body>
 <header class="header"><div class="headinner">
@@ -1455,7 +1464,7 @@ function showDetail(id){
   ['အရေအတွက်',sold?'0 ခု':Number(p.quantity??1)+' ခု','normal'],
   ['အခြေအနေ',sold?'ရောင်းထွက်ပြီး':st==='old'?'၁၀ ရက်ကျော်':'လက်ကျန်ရှိ',sold?'sold':'normal']
  ].filter(([label,value])=>value!==null&&value!==undefined&&String(value).trim()!=='');
- const gallery=images.length?'<div class="detail-gallery" id="detailGallery" data-index="0"><div class="detail-gallery-track" id="detailGalleryTrack">'+images.map((src,i)=>'<div class="detail-gallery-slide"><img src="'+escapeHtml(src)+'" alt="'+escapeHtml(p.name)+' ဓာတ်ပုံ '+(i+1)+'"></div>').join('')+'</div>'+(images.length>1?'<button type="button" class="detail-gallery-arrow prev" aria-label="ယခင်ပုံ" onclick="moveDetailImage(-1)">‹</button><button type="button" class="detail-gallery-arrow next" aria-label="နောက်ပုံ" onclick="moveDetailImage(1)">›</button><div class="detail-gallery-count" id="detailGalleryCount">1 / '+images.length+'</div>':'')+'</div>':'<div class="detail-gallery"><div class="placeholder">ဓာတ်ပုံ မရှိသေးပါ</div></div>';
+ const gallery=images.length?'<div class="detail-gallery" id="detailGallery" data-index="0"><div class="detail-gallery-track" id="detailGalleryTrack">'+images.map((src,i)=>'<div class="detail-gallery-slide"><a href="'+escapeHtml(src)+'" data-src="'+escapeHtml(src)+'" data-sub-html="<h4>'+escapeHtml(p.name)+' - '+(i+1)+' / '+images.length+'</h4>"><img src="'+escapeHtml(src)+'" alt="'+escapeHtml(p.name)+' ဓာတ်ပုံ '+(i+1)+'" loading="lazy"></a></div>').join('')+'</div>'+(images.length>1?'<button type="button" class="detail-gallery-arrow prev" aria-label="ယခင်ပုံ" onclick="moveDetailImage(-1)">‹</button><button type="button" class="detail-gallery-arrow next" aria-label="နောက်ပုံ" onclick="moveDetailImage(1)">›</button><div class="detail-gallery-count" id="detailGalleryCount">1 / '+images.length+'</div>':'')+'</div>':'<div class="detail-gallery"><div class="placeholder">ဓာတ်ပုံ မရှိသေးပါ</div></div>';
  $('detailBody').innerHTML=gallery+
  '<div class="detail-heading"><div class="detail-tags">'+(p.brand?'<span class="label">'+escapeHtml(p.brand)+'</span>':'')+(p.category?'<span class="label category">'+escapeHtml(p.category)+'</span>':'')+'</div><h2>'+escapeHtml(p.name)+'</h2></div>'+
  '<div class="detail-info-list">'+rows.map(([label,value,kind])=>'<div class="detail-info-card '+kind+'"><span>'+label+'</span><strong>'+(kind==='sold'?'<span class="detail-sold-text">ရောင်းထွက်ပြီး</span>':escapeHtml(value))+'</strong></div>').join('')+'</div>'+
@@ -1466,7 +1475,11 @@ function showDetail(id){
   const track=$('detailGalleryTrack');
   track.addEventListener('scroll',()=>{const gallery=$('detailGallery');if(!gallery)return;const index=Math.round(track.scrollLeft/track.clientWidth);gallery.dataset.index=String(index);const count=$('detailGalleryCount');if(count)count.textContent=(index+1)+' / '+images.length},{passive:true});
  }
+ if(window.detailLightGalleryInstance){window.detailLightGalleryInstance.destroy(true);window.detailLightGalleryInstance=null;}
  openModal('detailModal');
+ if(images.length&&window.lightGallery&&window.lgThumbnail&&window.lgZoom){
+  window.detailLightGalleryInstance=window.lightGallery($('detailGalleryTrack'),{plugins:[window.lgThumbnail,window.lgZoom],selector:'a',speed:350,thumbnail:true,animateThumb:true,zoom:true,allowMediaOverlap:true});
+ }
 }
 function moveDetailImage(direction){
  const gallery=$('detailGallery'),track=$('detailGalleryTrack');if(!gallery||!track)return;
@@ -1665,6 +1678,9 @@ loadLocalCache();syncFooter();renderProducts();renderFilters();loadCloudData();$
 .detail-contact{margin-top:5px}
 @media(max-width:520px){.detail-info-grid{grid-template-columns:1fr 1fr;gap:8px}.detail-info-card{padding:11px}.detail-gallery img{height:180px}.detail-heading h2{font-size:18px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@3/lightgallery.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@3/plugins/thumbnail/lg-thumbnail.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@3/plugins/zoom/lg-zoom.umd.js"></script>
 </body></html>
 <style>
 .ui-icon{width:1em!important;height:1em!important;vertical-align:-.14em!important;stroke-width:1.8}
