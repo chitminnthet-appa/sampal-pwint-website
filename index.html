@@ -1425,18 +1425,20 @@ $('adminLoginForm').addEventListener('submit',async e=>{
  const email=$('adminUsername').value.trim(),password=$('adminPassword').value;
  if(!email||!password){toast('Admin Email နှင့် Password ဖြည့်ပါ။','error');return}
  if(loginButton){loginButton.disabled=true;loginButton.dataset.originalText=loginButton.textContent;loginButton.textContent='ဝင်ရောက်နေသည်...'}
+ const withTimeout=(promise,label,ms=15000)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+' အချိန်ကြာလွန်းနေပါသည်။ Internet / Supabase URL / Key ကိုစစ်ပြီး ပြန်စမ်းပါ။')),ms))]);
  try{
-  if(!window.supabase||!supabaseClient){throw new Error('Supabase ချိတ်ဆက်မှု မတွေ့ပါ။ Website ကို Refresh လုပ်ပြီး ပြန်စမ်းပါ။')}
-  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(!window.supabase||!supabaseClient)throw new Error('Supabase ချိတ်ဆက်မှု မတွေ့ပါ။ Website ကို Refresh လုပ်ပါ။');
+  const {data,error}=await withTimeout(supabaseClient.auth.signInWithPassword({email,password}),'Supabase Login');
   if(error){console.error('Admin login error:',error);toast('Login မအောင်မြင်ပါ: '+(error.message||'Email / Password ကိုစစ်ပါ။'),'error');return}
   if(data.user?.id!==ADMIN_UID){await supabaseClient.auth.signOut();toast('ဒီ Account ကို Admin အဖြစ် ခွင့်မပြုထားပါ။','error');return}
   isLoggedIn=true;
-  const cloudLoaded=await loadCloudData();
+  const cloudLoaded=await withTimeout(loadCloudData(),'Cloud ဒေတာဖတ်ခြင်း');
   if(cloudLoaded===false){isLoggedIn=false;await supabaseClient.auth.signOut();return}
   closeModal('adminLoginModal');$('storefront').classList.add('hide');$('adminArea').classList.add('show');$('dashboard').classList.remove('hidden');refreshDashboard();populateSettings();$('fabContainer').classList.add('admin-authenticated');$('fabContainer').style.display='block';
  }catch(err){
   console.error('Unexpected admin login error:',err);
-  toast('Login လုပ်ရာတွင် ပြဿနာဖြစ်နေပါသည်: '+(err?.message||String(err)),'error');
+  isLoggedIn=false;
+  toast('Login ပြဿနာ: '+(err?.message||String(err)),'error');
  }finally{
   if(loginButton){loginButton.disabled=false;loginButton.textContent=loginButton.dataset.originalText||'Login ဝင်ရန် →'}
  }
