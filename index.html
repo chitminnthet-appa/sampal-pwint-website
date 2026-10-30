@@ -1340,7 +1340,7 @@ body.modal-open #adminFab{visibility:hidden!important;opacity:0!important;pointe
 
 </div></div>
 <div id="fabContainer" style="display:none"><div id="adminFab" class="admin-fab"><div class="fab-actions" id="fabActions"><button class="fab-action fab-logout" onclick="runFabAction('logout')"><span>↪</span> Logout</button><button class="fab-action fab-add" onclick="runFabAction('add')"><span>＋</span> ပစ္စည်းအသစ်ထည့်ရန်</button><button class="fab-action fab-settings" onclick="runFabAction('settings')"><span>⚙</span> Profile Setting</button></div><button type="button" class="fab-main" aria-label="Dashboard menu" aria-expanded="false" onclick="toggleAdminFab()">＋</button></div></div>
-<div id="adminLoginModal" class="modalback"><div class="modal admin-login-modal"><div class="modalhead"><h2>🔐 Admin Login</h2><button type="button" class="xbtn" onclick="closeModal('adminLoginModal')" aria-label="Close">×</button></div><div class="modalbody"><p class="admin-login-intro">စီမံခန့်ခွဲမှုအပိုင်းသို့ ဝင်ရန် Admin အကောင့်ဖြင့် Login ဝင်ပါ။</p><form id="adminLoginForm"><div class="field"><label for="adminUsername">Admin Email</label><input id="adminUsername" type="email" autocomplete="username" required placeholder="Admin Email ထည့်ပါ"></div><div class="field" style="margin-top:14px"><label for="adminPassword">Password</label><input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Password ထည့်ပါ"></div><button class="btn btn-primary" style="width:100%;margin-top:18px">Login ဝင်ရန် →</button><p class="hint">Supabase မှ ဖန်တီးထားသော Admin Email နှင့် Password ကို အသုံးပြုပါ။</p></form></div></div></div>
+<div id="adminLoginModal" class="modalback"><div class="modal admin-login-modal"><div class="modalhead"><h2>🔐 Admin Login</h2><button type="button" class="xbtn" onclick="closeModal('adminLoginModal')" aria-label="Close">×</button></div><div class="modalbody"><p class="admin-login-intro">စီမံခန့်ခွဲမှုအပိုင်းသို့ ဝင်ရန် Admin အကောင့်ဖြင့် Login ဝင်ပါ။</p><form id="adminLoginForm"><div class="field"><label for="adminUsername">Admin Email</label><input id="adminUsername" type="email" autocomplete="username" required placeholder="Admin Email ထည့်ပါ"></div><div class="field" style="margin-top:14px"><label for="adminPassword">Password</label><input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Password ထည့်ပါ"></div><button class="btn btn-primary" style="width:100%;margin-top:18px">Login ဝင်ရန် →</button></form></div></div></div>
 <div id="productModal" class="modalback"><div class="modal"><div class="modalhead"><h2 id="productModalTitle">ပစ္စည်းအသစ်ထည့်ရန်</h2><button class="xbtn" onclick="closeModal('productModal')">×</button></div><form id="productForm"><div class="modalbody"><input type="hidden" id="editId"><div class="formgrid">
 <div class="field"><label>ပရိဘောဂအမည် *</label><input id="pName" required placeholder="ဥပမာ - သစ်သားစားပွဲခုံ"></div>
 <div class="field"><label>Brand အမည်</label><input id="pBrand" placeholder="Brand အမည် (မဖြစ်မနေမဟုတ်)"></div>
@@ -1850,6 +1850,8 @@ body>.header{
 
 
 /* Admin Login: center the dialog by viewport coordinates, independent of other modal layouts */
+/* Prevent body.modal-open from becoming the fixed-position containing block. */
+body.modal-open{position:static!important}
 #adminLoginModal{
   position:fixed!important;
   top:0!important;right:0!important;bottom:0!important;left:0!important;
