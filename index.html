@@ -1420,11 +1420,26 @@ function openDashboard(){
 }
 function openLogin(){openDashboard()}
 $('adminLoginForm').addEventListener('submit',async e=>{
- e.preventDefault();const email=$('adminUsername').value.trim(),password=$('adminPassword').value;
- const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
- if(error){toast('Login မအောင်မြင်ပါ။ Email / Password ကိုစစ်ပါ။','error');return}
- if(data.user?.id!==ADMIN_UID){await supabaseClient.auth.signOut();toast('ဒီ Account ကို Admin အဖြစ် ခွင့်မပြုထားပါ။','error');return}
- isLoggedIn=true;await loadCloudData();closeModal('adminLoginModal');$('storefront').classList.add('hide');$('adminArea').classList.add('show');$('dashboard').classList.remove('hidden');refreshDashboard();populateSettings();$('fabContainer').classList.add('admin-authenticated');$('fabContainer').style.display='block';
+ e.preventDefault();
+ const form=$('adminLoginForm'),loginButton=form.querySelector('button[type="submit"],button:not([type])');
+ const email=$('adminUsername').value.trim(),password=$('adminPassword').value;
+ if(!email||!password){toast('Admin Email နှင့် Password ဖြည့်ပါ။','error');return}
+ if(loginButton){loginButton.disabled=true;loginButton.dataset.originalText=loginButton.textContent;loginButton.textContent='ဝင်ရောက်နေသည်...'}
+ try{
+  if(!window.supabase||!supabaseClient){throw new Error('Supabase ချိတ်ဆက်မှု မတွေ့ပါ။ Website ကို Refresh လုပ်ပြီး ပြန်စမ်းပါ။')}
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error){console.error('Admin login error:',error);toast('Login မအောင်မြင်ပါ: '+(error.message||'Email / Password ကိုစစ်ပါ။'),'error');return}
+  if(data.user?.id!==ADMIN_UID){await supabaseClient.auth.signOut();toast('ဒီ Account ကို Admin အဖြစ် ခွင့်မပြုထားပါ။','error');return}
+  isLoggedIn=true;
+  const cloudLoaded=await loadCloudData();
+  if(cloudLoaded===false){isLoggedIn=false;await supabaseClient.auth.signOut();return}
+  closeModal('adminLoginModal');$('storefront').classList.add('hide');$('adminArea').classList.add('show');$('dashboard').classList.remove('hidden');refreshDashboard();populateSettings();$('fabContainer').classList.add('admin-authenticated');$('fabContainer').style.display='block';
+ }catch(err){
+  console.error('Unexpected admin login error:',err);
+  toast('Login လုပ်ရာတွင် ပြဿနာဖြစ်နေပါသည်: '+(err?.message||String(err)),'error');
+ }finally{
+  if(loginButton){loginButton.disabled=false;loginButton.textContent=loginButton.dataset.originalText||'Login ဝင်ရန် →'}
+ }
 });
 async function logout(){await supabaseClient.auth.signOut();$('fabContainer').classList.remove('admin-authenticated');$('fabContainer').style.display='none';toggleAdminFab(false);isLoggedIn=false;$('dashboard').classList.add('hidden');$('adminArea').classList.remove('show');$('storefront').classList.remove('hide');closeModal('adminLoginModal');toast('Logout လုပ်ပြီးပါပြီ။');window.scrollTo({top:0,behavior:'smooth'})}
 
