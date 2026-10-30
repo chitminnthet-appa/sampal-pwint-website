@@ -1374,7 +1374,7 @@ function appProduct(p){return {...p,previousQuantity:p.previous_quantity||p.prev
 async function loadCloudData(){
  try{const [pr,sr]=await Promise.all([supabaseClient.from('products').select('*').order('created_at',{ascending:false}),supabaseClient.from('site_settings').select('*').eq('id',1).maybeSingle()]);
   if(pr.error)throw pr.error; products=(pr.data||[]).map(appProduct);cacheProducts();
-  if(sr.error)throw sr.error; if(sr.data){settings={...settings,phone:sr.data.phone||settings.phone,location:sr.data.location||settings.location,facebook:sr.data.facebook||'',messenger:sr.data.messenger||'',tiktok:sr.data.tiktok||'',telegram:sr.data.telegram||''};cacheSettings()}
+  if(sr.error)throw sr.error; if(sr.data){settings={...settings,phone:sr.data.phone||settings.phone,location:sr.data.location && sr.data.location !== 'တောင်ဒဂုံ (18 ရပ်ကွက်) ရန်ကုန်မြို့' ? sr.data.location : 'တောင်ဒဂုံမြို့နယ်၊ (၁၈) ရပ်ကွက်၊ သုခရတနာလမ်းနှင့် ပုလဲရတနာလမ်းထောင့်၊ ရန်ကုန်မြို့။',facebook:sr.data.facebook||'',messenger:sr.data.messenger||'',tiktok:sr.data.tiktok||'',telegram:sr.data.telegram||''};cacheSettings()}
   renderProducts();syncFooter();return true;
  }catch(err){console.error('Supabase load error:',err);toast('Cloud ဒေတာဖတ်မရပါ။ Supabase Table / RLS Policy ကို စစ်ဆေးပါ။','error');return false}
 }
