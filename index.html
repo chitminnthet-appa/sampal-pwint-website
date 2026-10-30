@@ -1834,4 +1834,16 @@ body.modal-open{
   }
 }
 
+
+/* Keep the top brand/contact header visible while the page scrolls */
+html{overflow-x:clip!important;overflow-y:visible!important}
+body{overflow-x:clip!important;overflow-y:visible!important}
+body>.header{
+  position:sticky!important;
+  top:0!important;
+  z-index:1000!important;
+  width:100%!important;
+  flex-shrink:0!important;
+}
+
 </style>
