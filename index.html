@@ -1281,16 +1281,31 @@ body.modal-open #adminFab{visibility:hidden!important;opacity:0!important;pointe
  .glass-confirm-actions{display:grid;grid-template-columns:1fr 1fr}
  .glass-confirm-actions .btn{min-width:0;width:100%}
 }
+
+/* Requested product detail gallery and one-row information layout */
+.detail-gallery{position:relative;margin:0 0 18px;overflow:hidden;border-radius:14px;background:#f1f4ef}
+.detail-gallery-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.detail-gallery-track::-webkit-scrollbar{display:none}
+.detail-gallery-slide{flex:0 0 100%;width:100%;height:clamp(210px,48vw,390px);display:grid;place-items:center;scroll-snap-align:center}
+.detail-gallery-slide img{display:block;width:100%;height:100%;object-fit:contain;padding:8px}
+.detail-gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:50%;background:#173e30d9;color:#fff;font-size:26px;line-height:1;z-index:1}
+.detail-gallery-arrow.prev{left:10px}.detail-gallery-arrow.next{right:10px}
+.detail-gallery-count{position:absolute;right:12px;bottom:12px;padding:5px 10px;border-radius:20px;background:#102b21cc;color:#fff;font-size:11px}
+.detail-info-list{display:flex;flex-direction:column;gap:9px;margin:15px 0}
+.detail-info-list .detail-info-card{width:100%;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:14px}
+.detail-info-list .detail-info-card>span{flex:0 0 95px}
+.detail-info-list .detail-info-card strong{text-align:right;min-width:0}
+@media(max-width:520px){.detail-gallery-slide{height:260px}.detail-info-list .detail-info-card{padding:12px}.detail-info-list .detail-info-card>span{flex-basis:82px}}
 </style>
 
 </head>
 <body>
 <header class="header"><div class="headinner">
-  <button class="brand brand-home" type="button" onclick="showStore()" aria-label="ပင်မစာမျက်နှာ"><div class="logo">✿</div><div class="brandcopy"><h1>စံပယ်ပွင့်</h1><p>ပရိဘောဂဆိုင်မှ ကြိုဆိုပါသည်</p></div></button>
+  <button class="brand brand-home" type="button" onclick="showStore()" aria-label="ပင်မစာမျက်နှာ"><div class="logo">✿</div><div class="brandcopy"><h1>စံပယ်ပွင့်</h1><p>စံပယ်ပွင့် ပရိဘောဂ ရောင်းဝယ်ရေးမှ ကြိုဆိုပါသည်။</p></div></button>
   <div class="headactions"><a id="headerCallButton" class="round-action phone-action" href="tel:09796345214" aria-label="ဖုန်းခေါ်ရန်">☎</a></div>
 </div></header>
 <div id="storefront" class="storefront">
-<section class="hero"><div class="hero-panel"><div class="hero-content"><div class="eyebrow">SAMPAL PWINT · FURNITURE</div><h2>စံပယ်ပွင့်<br>ပရိဘောဂ အမျိုးမျိုး ရောင်းဝယ်ရေးမှ ကြိုဆိုပါသည်။</h2><p>အရည်အသွေးကောင်း ပရိဘောဂများကို ရွေးချယ်လိုက်ပါ။</p></div><div class="hero-art" aria-hidden="true"><span>🪑</span><i>🛋️</i><b>🪴</b></div></div></section>
+<section class="hero"><div class="hero-panel"><div class="hero-content"><div class="eyebrow">SAMPAL PWINT · FURNITURE</div><h2>သင့်ရွေးချယ်မှုရဲ့ အလှတရားအသစ်</h2><p>အရည်အသွေးကောင်း ပရိဘောဂများကို ရွေးချယ်လိုက်ပါ။</p></div><div class="hero-art" aria-hidden="true"><span>🪑</span><i>🛋️</i><b>🪴</b></div></div></section>
 <main class="main" id="productsSection">
 <div class="catalog-tools">
   <label class="search-field"><span>⌕</span><input id="productSearch" type="search" placeholder="ပရိဘောဂအမည်၊ အမျိုးအစား ရှာရန်" oninput="renderProducts()" aria-label="ပစ္စည်းရှာရန်"></label>
@@ -1430,23 +1445,34 @@ function renderProducts(){renderFilters();const q=($('productSearch')?.value||''
 $('productGrid').innerHTML=list.map(p=>{let st=statusOf(p),price=Number(p.price||0),disc=Math.max(0,Number(p.discount||0)),finalPrice=Math.max(0,price-disc);return `<article class="product"><div class="photo" onclick="showDetail('${p.id}')">${productPhoto(p)}<div class="labels">${p.status==='sold'?`<span class="label sold-label">✖ ရောင်းထွက်ပြီး</span>`:`${p.brand?`<span class="label">${escapeHtml(p.brand)}</span>`:''}<span class="label category">${escapeHtml(p.category)}</span>${disc?`<span class="label discount-amount-label">${money(disc)}</span>`:''}`}</div></div><div class="productbody"><h3>${escapeHtml(p.name)}</h3><div class="brandline">${p.size?'Size: '+escapeHtml(p.size):'စံပယ်ပွင့် ပရိဘောဂ'}</div><div class="price">${money(finalPrice)}${disc?`<span class="oldprice">${money(price)}</span>`:''}</div><div class="loc">⌖ ${escapeHtml(p.location||settings.location)}</div><div class="productactions"><button class="btn btn-primary" onclick="showDetail('${p.id}')"><span class="btn-ico">▤</span> အသေးစိတ်</button><button class="btn btn-outline" onclick="contactFor('${p.id}')"><span class="btn-ico">☎</span> မေးမြန်းရန်</button></div></div></article>`}).join('')}
 function showDetail(id){
  let p=products.find(x=>x.id===id);if(!p)return;
- let imgs=(p.images||[]).map(src=>`<img src="${src}" alt="${escapeHtml(p.name)}">`).join('');
- let st=statusOf(p),sold=p.status==='sold';
+ const images=(p.images||[]).filter(src=>typeof src==='string'&&src.trim());
+ const st=statusOf(p),sold=p.status==='sold';
  const rows=[
-  ['အမျိုးအစား',p.category||'မဖော်ပြထားပါ','normal'],
+  ['အမျိုးအစား',p.category,'normal'],
   ['ဈေးနှုန်း',money(Math.max(0,Number(p.price||0)-Number(p.discount||0))),'price'],
   ['တည်နေရာ',p.location||settings.location,'normal'],
-  ['အရွယ်အစား',p.size||'မဖော်ပြထားပါ','normal'],
+  ['အရွယ်အစား',p.size,'normal'],
   ['အရေအတွက်',sold?'0 ခု':Number(p.quantity??1)+' ခု','normal'],
   ['အခြေအနေ',sold?'ရောင်းထွက်ပြီး':st==='old'?'၁၀ ရက်ကျော်':'လက်ကျန်ရှိ',sold?'sold':'normal']
- ];
- $('detailBody').innerHTML=`<div class="detail-gallery">${imgs||'<div class="placeholder">ဓာတ်ပုံ မရှိသေးပါ</div>'}</div>
- <div class="detail-heading"><div class="detail-tags">${p.brand?`<span class="label">${escapeHtml(p.brand)}</span>`:''}<span class="label category">${escapeHtml(p.category)}</span></div><h2>${escapeHtml(p.name)}</h2></div>
- <div class="detail-info-grid">${rows.map(([label,value,kind])=>`<div class="detail-info-card ${kind}"><span>${label}</span><strong>${kind==='sold'?'<span class="detail-sold-text">ရောင်းထွက်ပြီး</span>':escapeHtml(value)}</strong></div>`).join('')}</div>
- ${Number(p.discount)>0?`<div class="detail-discount-amount">လျှော့ဈေး ${money(p.discount)} <span>မူရင်းဈေး ${money(p.price)}</span></div>`:''}
- <div class="detail-description-card"><h3>ပစ္စည်းအသေးစိတ်</h3><p>${escapeHtml(p.description||'အသေးစိတ်ဖော်ပြချက် မရှိသေးပါ။')}</p></div>
- <button class="btn btn-primary detail-contact" onclick="contactFor('${p.id}')">ဖုန်းဖြင့် မေးမြန်းရန် ☎</button>`;
- openModal('detailModal')
+ ].filter(([label,value])=>value!==null&&value!==undefined&&String(value).trim()!=='');
+ const gallery=images.length?'<div class="detail-gallery" id="detailGallery" data-index="0"><div class="detail-gallery-track" id="detailGalleryTrack">'+images.map((src,i)=>'<div class="detail-gallery-slide"><img src="'+escapeHtml(src)+'" alt="'+escapeHtml(p.name)+' ဓာတ်ပုံ '+(i+1)+'"></div>').join('')+'</div>'+(images.length>1?'<button type="button" class="detail-gallery-arrow prev" aria-label="ယခင်ပုံ" onclick="moveDetailImage(-1)">‹</button><button type="button" class="detail-gallery-arrow next" aria-label="နောက်ပုံ" onclick="moveDetailImage(1)">›</button><div class="detail-gallery-count" id="detailGalleryCount">1 / '+images.length+'</div>':'')+'</div>':'<div class="detail-gallery"><div class="placeholder">ဓာတ်ပုံ မရှိသေးပါ</div></div>';
+ $('detailBody').innerHTML=gallery+
+ '<div class="detail-heading"><div class="detail-tags">'+(p.brand?'<span class="label">'+escapeHtml(p.brand)+'</span>':'')+(p.category?'<span class="label category">'+escapeHtml(p.category)+'</span>':'')+'</div><h2>'+escapeHtml(p.name)+'</h2></div>'+
+ '<div class="detail-info-list">'+rows.map(([label,value,kind])=>'<div class="detail-info-card '+kind+'"><span>'+label+'</span><strong>'+(kind==='sold'?'<span class="detail-sold-text">ရောင်းထွက်ပြီး</span>':escapeHtml(value))+'</strong></div>').join('')+'</div>'+
+ (Number(p.discount)>0?'<div class="detail-discount-amount">လျှော့ဈေး '+money(p.discount)+' <span>မူရင်းဈေး '+money(p.price)+'</span></div>':'')+
+ (p.description&&String(p.description).trim()?'<div class="detail-description-card"><h3>ပစ္စည်းအသေးစိတ်</h3><p>'+escapeHtml(p.description)+'</p></div>':'')+
+ '<button class="btn btn-primary detail-contact" onclick="contactFor(\''+String(p.id).replace(/'/g,"\\'")+'\')">ဖုန်းဖြင့် မေးမြန်းရန် ☎</button>';
+ if(images.length>1){
+  const track=$('detailGalleryTrack');
+  track.addEventListener('scroll',()=>{const gallery=$('detailGallery');if(!gallery)return;const index=Math.round(track.scrollLeft/track.clientWidth);gallery.dataset.index=String(index);const count=$('detailGalleryCount');if(count)count.textContent=(index+1)+' / '+images.length},{passive:true});
+ }
+ openModal('detailModal');
+}
+function moveDetailImage(direction){
+ const gallery=$('detailGallery'),track=$('detailGalleryTrack');if(!gallery||!track)return;
+ const count=track.children.length,index=Number(gallery.dataset.index||0);
+ const next=Math.max(0,Math.min(count-1,index+direction));
+ track.scrollTo({left:next*track.clientWidth,behavior:'smooth'});
 }
 function contactFor(id){let p=products.find(x=>x.id===id);if(!p)return;let text=`မင်္ဂလာပါ။ စံပယ်ပွင့် Website မှ ${p.name} (${money(p.price)}) အကြောင်း မေးမြန်းလိုပါသည်။`;let url=settings.messenger||`https://wa.me/${settings.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`;if(settings.messenger)window.open(url,'_blank','noopener');else location.href='tel:'+settings.phone.replace(/[^0-9+]/g,'');}
 function showStore(){$('storefront').classList.remove('hide');$('adminArea').classList.remove('show');window.scrollTo({top:0,behavior:'smooth'})}
