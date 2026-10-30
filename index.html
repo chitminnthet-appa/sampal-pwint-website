@@ -1846,4 +1846,29 @@ body>.header{
   flex-shrink:0!important;
 }
 
+
+/* Restore the standalone centered Admin Login dialog */
+#adminLoginModal{
+  position:fixed!important;
+  inset:0!important;
+  display:none!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:16px!important;
+  overflow-y:auto!important;
+  z-index:10000!important;
+}
+#adminLoginModal.show{
+  display:flex!important;
+}
+#adminLoginModal>.admin-login-modal{
+  position:relative!important;
+  flex:0 1 390px!important;
+  width:min(390px,100%)!important;
+  max-width:390px!important;
+  max-height:calc(100dvh - 32px)!important;
+  margin:auto!important;
+  transform:none!important;
+}
+
 </style>
