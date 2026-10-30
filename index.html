@@ -1802,4 +1802,36 @@ button,a,input,select,textarea{max-width:100%}
  .modalbody{padding:11px}
 }
 
+
+/* Targeted fix: restore normal document scrolling and keep the storefront footer after content */
+html,body{
+  height:auto!important;
+  min-height:100%!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:auto!important;
+}
+body{
+  position:static;
+}
+body.modal-open{
+  overflow:hidden!important;
+}
+#storefront{
+  display:block;
+  min-height:100vh;
+  height:auto!important;
+  overflow:visible!important;
+}
+#storefront>.footer{
+  position:relative!important;
+  inset:auto!important;
+  margin-top:32px!important;
+  clear:both;
+}
+@media(min-width:1025px){
+  #storefront>.footer{
+    margin-top:40px!important;
+  }
+}
+
 </style>
