@@ -1849,6 +1849,29 @@ body>.header{
 }
 
 
+/* Show Admin Dashboard as its own full-screen view, not below the storefront */
+#adminArea.adminwrap{
+  position:fixed!important;
+  inset:0!important;
+  z-index:1100!important;
+  display:none!important;
+  width:100%!important;
+  max-width:none!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  margin:0!important;
+  padding:24px 24px 110px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  border-radius:0!important;
+  background:#F4F9F1!important;
+  overscroll-behavior:contain!important;
+}
+#adminArea.adminwrap.show{display:block!important}
+#fabContainer.admin-authenticated{position:relative!important;z-index:1200!important}
+@media(max-width:650px){
+  #adminArea.adminwrap{padding:15px 10px 100px!important}
+}
 /* Admin Login: center the dialog by viewport coordinates, independent of other modal layouts */
 /* Prevent body.modal-open from becoming the fixed-position containing block. */
 body.modal-open{position:static!important}
