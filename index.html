@@ -1303,9 +1303,13 @@ body.modal-open #adminFab{visibility:hidden!important;opacity:0!important;pointe
 #detailGallery.detail-gallery{display:block;position:relative;overflow:hidden;margin:0 0 18px;border-radius:14px;background:#f1f4ef}
 #detailGallery .detail-gallery-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 #detailGallery .detail-gallery-track::-webkit-scrollbar{display:none}
-#detailGallery .detail-gallery-slide{flex:0 0 100%;width:100%;height:clamp(210px,48vw,390px);display:grid;place-items:center;scroll-snap-align:center}
-#detailGallery .detail-gallery-slide img{display:block;width:100%;height:100%;object-fit:contain;padding:8px;border:0;border-radius:0;background:transparent}
-#detailGallery .detail-gallery-slide a{display:block;width:100%;height:100%;cursor:zoom-in}
+#detailGallery .detail-gallery-slide{flex:0 0 100%;width:100%;height:auto;min-height:0;display:grid;place-items:center;scroll-snap-align:center}
+#detailGallery .detail-gallery-slide img{display:block;width:auto;height:auto;max-width:100%;max-height:65vh;object-fit:contain;padding:0;border:0;border-radius:0;background:transparent}
+#detailGallery .detail-gallery-slide a{display:flex;width:100%;height:auto;min-height:0;align-items:center;justify-content:center;cursor:zoom-in}
+#detailGallery .detail-gallery-track{align-items:center;min-height:0}
+.lg-outer .lg-content{top:56px;bottom:56px}
+.lg-outer .lg-toolbar .lg-close{display:block!important;position:absolute;top:8px;right:8px;width:44px;height:44px;line-height:44px;border-radius:50%;background:rgba(0,0,0,.62);color:#fff;opacity:1!important;z-index:1090}
+.lg-outer .lg-toolbar .lg-close:after{font-size:26px}
 </style>
 </head>
 <body>
@@ -1467,9 +1471,9 @@ function showDetail(id){
  const gallery=images.length?'<div class="detail-gallery" id="detailGallery" data-index="0"><div class="detail-gallery-track" id="detailGalleryTrack">'+images.map((src,i)=>'<div class="detail-gallery-slide"><a href="'+escapeHtml(src)+'" data-src="'+escapeHtml(src)+'" data-sub-html="<h4>'+escapeHtml(p.name)+' - '+(i+1)+' / '+images.length+'</h4>"><img src="'+escapeHtml(src)+'" alt="'+escapeHtml(p.name)+' ဓာတ်ပုံ '+(i+1)+'" loading="lazy"></a></div>').join('')+'</div>'+(images.length>1?'<button type="button" class="detail-gallery-arrow prev" aria-label="ယခင်ပုံ" onclick="moveDetailImage(-1)">‹</button><button type="button" class="detail-gallery-arrow next" aria-label="နောက်ပုံ" onclick="moveDetailImage(1)">›</button><div class="detail-gallery-count" id="detailGalleryCount">1 / '+images.length+'</div>':'')+'</div>':'<div class="detail-gallery"><div class="placeholder">ဓာတ်ပုံ မရှိသေးပါ</div></div>';
  $('detailBody').innerHTML=gallery+
  '<div class="detail-heading"><div class="detail-tags">'+(p.brand?'<span class="label">'+escapeHtml(p.brand)+'</span>':'')+(p.category?'<span class="label category">'+escapeHtml(p.category)+'</span>':'')+'</div><h2>'+escapeHtml(p.name)+'</h2></div>'+
- '<div class="detail-info-list">'+rows.map(([label,value,kind])=>'<div class="detail-info-card '+kind+'"><span>'+label+'</span><strong>'+(kind==='sold'?'<span class="detail-sold-text">ရောင်းထွက်ပြီး</span>':escapeHtml(value))+'</strong></div>').join('')+'</div>'+
+ '<div class="detail-info-list">'+rows.map(([label,value,kind])=>'<div class="detail-info-item"><h3 class="detail-info-title">'+label+'</h3><div class="detail-info-card '+kind+'"><strong>'+(kind==='sold'?'<span class="detail-sold-text">ရောင်းထွက်ပြီး</span>':escapeHtml(value))+'</strong></div></div>').join('')+'</div>'+
  (Number(p.discount)>0?'<div class="detail-discount-amount">လျှော့ဈေး '+money(p.discount)+' <span>မူရင်းဈေး '+money(p.price)+'</span></div>':'')+
- (p.description&&String(p.description).trim()?'<div class="detail-description-card"><h3>ပစ္စည်းအသေးစိတ်</h3><p>'+escapeHtml(p.description)+'</p></div>':'')+
+ (p.description&&String(p.description).trim()?'<div class="detail-description-item"><h3 class="detail-info-title">ပစ္စည်းအသေးစိတ်</h3><div class="detail-description-card"><p>'+escapeHtml(p.description)+'</p></div></div>':'')+
  '<button class="btn btn-primary detail-contact" onclick="contactFor(\''+String(p.id).replace(/'/g,"\\'")+'\')">ဖုန်းဖြင့် မေးမြန်းရန် ☎</button>';
  if(images.length>1){
   const track=$('detailGalleryTrack');
@@ -1676,6 +1680,15 @@ loadLocalCache();syncFooter();renderProducts();renderFilters();loadCloudData();$
 .detail-description-card h3{font-size:13px;color:#244a35;margin:0 0 9px}
 .detail-description-card p{font-size:12px;line-height:2;color:#58665d;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
 .detail-contact{margin-top:5px}
+.detail-info-list{display:flex;flex-direction:column;gap:13px;margin:15px 0}
+.detail-info-item{display:flex;flex-direction:column;gap:6px;min-width:0}
+.detail-info-title{display:block;margin:0;color:#244a35;font-size:15px;font-weight:800;line-height:1.5}
+.detail-info-item .detail-info-card{display:block;padding:12px 14px}
+.detail-info-item .detail-info-card strong{display:block;font-size:13px;font-weight:600;line-height:1.8}
+.detail-info-item .detail-info-card.price strong{font-size:16px;font-weight:700}
+.detail-description-item{display:flex;flex-direction:column;gap:6px;margin:13px 0}
+.detail-description-item .detail-description-card{margin:0}
+.detail-description-item .detail-description-card p{font-size:13px}
 @media(max-width:520px){.detail-info-grid{grid-template-columns:1fr 1fr;gap:8px}.detail-info-card{padding:11px}.detail-gallery img{height:180px}.detail-heading h2{font-size:18px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lightgallery@3/lightgallery.umd.js"></script>
