@@ -1560,8 +1560,9 @@ function syncModalState(){
 }
 function openModal(id){
  const modal=$(id);if(!modal)return;
- // Keep Admin Login outside storefront/layout containers so fixed centering is viewport-based.
- if(id==='adminLoginModal'&&modal.parentElement!==document.body)document.body.appendChild(modal);
+ // Render dialogs at body level so the standalone Admin Dashboard cannot hide
+ // dialogs that were originally nested inside the storefront.
+ if(modal.classList.contains('modalback')&&modal.parentElement!==document.body)document.body.appendChild(modal);
  modal.classList.add('show');
  if(id==='profileSettingModal')populateSettings();
  syncModalState();
